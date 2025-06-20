@@ -1,32 +1,38 @@
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.*;
+import java.util.concurrent.*;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-    BlockingQueue<String> queue = new LinkedBlockingQueue<>(3);
-    Producer producer = new Producer("https://www.fmscout.com/a-football-manager-2024-wonderkids.html", queue);
-    Consumer consumer = new Consumer(queue);
+        Scanner scanner = new Scanner(System.in);
+        BlockingQueue<String> queue = new LinkedBlockingQueue<>(3);
 
-    Thread producerThread = new Thread(producer);
-    Thread consumerThread = new Thread(consumer);
+        List<String> urls = new ArrayList<>();
 
-    producerThread.start();
-    consumerThread.start();
-    
+        System.out.println("Enter up to 3 website URLs (press Enter to skip):");
+        for (int i = 1; i <= 3; i++) {
+            System.out.print("URL " + i + ": ");
+            String url = scanner.nextLine().trim();
+            if (!url.isEmpty()) {
+                urls.add(url);
+            }
+        }
+
+        System.out.print("Enter a word to search for: ");
+        String wordToSearch = scanner.nextLine();
+
+        // Start producer threads (crawlers)
+        List<Thread> producerThreads = new ArrayList<>();
+        for (String url : urls) {
+            Thread producerThread = new Thread(new Producer(url, queue));
+            producerThreads.add(producerThread);
+            producerThread.start();
+        }
+
+        // Start indexer threads (consumers)
+        int numConsumers = 2; // You can adjust this number as needed
+        for (int i = 0; i < numConsumers; i++) {
+            Thread consumerThread = new Thread(new Consumer(queue, wordToSearch));
+            consumerThread.start();
         }
     }
-
-
-    /*You start 3 crawler threads:
-  - Crawler 1 downloads https://site1.com
-  - Crawler 2 downloads https://site2.com
-  - Crawler 3 downloads https://site3.com
-
-They all put their results into the shared queue.
-
-Then, 2 indexer threads:
-  - Indexer 1 pulls page from the queue and parses it
-  - Indexer 2 pulls the next one and parses that
-*/
+}

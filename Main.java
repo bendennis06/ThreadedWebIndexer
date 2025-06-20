@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -8,73 +5,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        BlockingQueue<String> queue = new LinkedBlockingQueue<>(3);
-        List<String> urlList = new ArrayList<String>(); //list to store the urls
+    BlockingQueue<String> queue = new LinkedBlockingQueue<>(3);
+    Producer producer = new Producer("https://www.fmscout.com/a-football-manager-2024-wonderkids.html", queue);
+    Consumer consumer = new Consumer(queue);
 
-        Scanner scanner = new Scanner(System.in);
+    Thread producerThread = new Thread(producer);
+    Thread consumerThread = new Thread(consumer);
 
-        System.out.println("Enter up to 3 websites or press enter to skip");
-
-        for (int i = 1; i <= 3; i++){
-            System.out.println("URL" + i +": ");
-            String userInput = scanner.nextLine();
-            if(!userInput.isEmpty()){
-                urlList.add(userInput);
-            }
+    producerThread.start();
+    consumerThread.start();
+    
         }
-
-        System.out.println("Enter a word to search for: ");
-        String wordToSearch = scanner.nextLine();
-
-//        System.out.println("Enter the website URL for the first website: ");
-//        String userInputURLOne = scanner.nextLine();
-//
-//        System.out.println("Enter the website URL for the second website: ");
-//        String userInputURLTwo = scanner.nextLine();
-//
-//        System.out.println("Enter the website URL for the third website: ");
-//        String userInputURLThree = scanner.nextLine();
-
-        List<Thread> producers = new ArrayList<>(); //list for producers
-        for(String url:urlList){
-            Thread producer = new Thread(new Producer(url,queue));
-            producers.add(producer);
-            producer.start();
-        }
-
-        Thread consumer = new Thread(new Consumer(queue, wordToSearch));
-        consumer.start();
-
-
-
-//        Producer producerOne = new Producer(userInputURLOne, queue);
-//        Consumer consumerOne = new Consumer(queue, wordToSearch);
-//
-//        Producer producerTwo = new Producer(userInputURLTwo, queue);
-//        Consumer consumerTwo = new Consumer(queue, wordToSearch);
-//
-//        Producer producerThree = new Producer(userInputURLThree, queue);
-//        Consumer consumerThree = new Consumer(queue, wordToSearch);
-//
-//        Thread producerThreadOne = new Thread(producerOne);
-//        Thread consumerThreadOne = new Thread(consumerOne);
-//
-//        Thread producerThreadTwo = new Thread(producerTwo);
-//        Thread consumerThreadTwo = new Thread(consumerTwo);
-//
-//        Thread producerThreadThree = new Thread(producerThree);
-//        Thread consumerThreadThree = new Thread(consumerThree);
-//
-//        producerThreadOne.start();
-//        producerThreadTwo.start();
-//        producerThreadThree.start();
-//
-//        consumerThreadOne.start();
-//        consumerThreadTwo.start();
-//        consumerThreadThree.start();
-
-
-    }
     }
 
 

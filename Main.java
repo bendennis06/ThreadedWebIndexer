@@ -17,6 +17,11 @@ public class Main {
             }
         }
 
+        if(urls.isEmpty()){
+            System.out.println("Quitting program, no input");
+            return; //end program
+        }
+
         System.out.print("Enter a word to search for: ");
         String wordToSearch = scanner.nextLine();
 
@@ -29,7 +34,7 @@ public class Main {
         }
 
         // Start indexer threads (consumers)
-        int numConsumers = 2; // You can adjust this number as needed
+        int numConsumers = 3; //can adjust this number as needed
         for (int i = 0; i < numConsumers; i++) {
             Thread consumerThread = new Thread(new Consumer(queue, wordToSearch));
             consumerThread.start();
